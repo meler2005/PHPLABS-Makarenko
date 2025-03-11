@@ -1,0 +1,77 @@
+- Обчислення об’єму куба (ребро 4).
+
+<?php
+$side = 4;
+$volume = pow($side, 3);
+echo "Об'єм куба з ребром $side = $volume";
+?>
+
+
+- Виведення таблиці квадратів чисел від 1 до 5.
+
+<?php
+echo "<table border='1'>";
+echo "<tr><th>Число</th><th>Квадрат</th></tr>";
+
+for ($i = 1; $i <= 5; $i++) {
+    echo "<tr><td>$i</td><td>" . ($i * $i) . "</td></tr>";
+}
+
+echo "</table>";
+?>
+
+
+- index.html
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота 01</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Лабораторна робота 01</h1>
+        <p><strong>Тема:</strong> Налаштування середовища PHP розробки</p>
+        <p><strong>Виконав:</strong> Макаренко Микола Віталійович</p>
+        <p><strong>Група:</strong> KN1-B22</p>
+        <a href="https://drive.google.com/file/d/1kG1OM83cAuCgGSYLyG8t48l8JJQBvMdk/view" target="_blank">Переглянути завдання</a>
+    </div>
+
+</body>
+</html>
