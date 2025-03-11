@@ -1,0 +1,84 @@
+- завдання 1:
+
+<?php
+$number = 5;
+$multiplicationTable = [];
+
+for ($i = 1; $i <= 10; $i++) {
+    $multiplicationTable[$i] = $number * $i;
+}
+
+echo "<table border='1'>";
+echo "<tr><th>Число</th><th>Результат</th></tr>";
+
+foreach ($multiplicationTable as $key => $value) {
+    echo "<tr><td>$number × $key</td><td>$value</td></tr>";
+}
+
+echo "</table>";
+?>
+
+
+- завдання 2:
+
+<?php
+$number = -3; // Можна змінити на будь-яке число
+$result = ($number > 0) ? "Число $number є додатним" : "Число $number не є додатним";
+echo $result;
+?>
+
+
+- index(3).html
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота 03</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Лабораторна робота 03</h1>
+        <p><strong>Тема:</strong> Управління потоками виконання</p>
+        <p><strong>Виконав:</strong> Макаренко Микола Віталійович</p>
+        <p><strong>Група:</strong> KN1-B22</p>
+        <a href="https://drive.google.com/file/d/1EMJqulvvAuxfYNHnUirzcxsCjDq30Gxs/view" target="_blank">Переглянути завдання</a>
+    </div>
+
+</body>
+</html>
