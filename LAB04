@@ -1,0 +1,90 @@
+- Завдання 1
+
+<?php
+// Генеруємо масив із випадкових чисел від 1 до 100
+$numbers = array_map(fn() => rand(1, 100), range(1, 20)); // Масив із 20 випадкових чисел
+
+// Фільтруємо масив, залишаючи тільки числа >= 50
+$filteredNumbers = array_filter($numbers, fn($num) => $num >= 50);
+
+// Виводимо оригінальний масив
+echo "<strong>Оригінальний масив:</strong> " . implode(", ", $numbers) . "<br>";
+
+// Виводимо відфільтрований масив
+echo "<strong>Відфільтрований масив (числа >= 50):</strong> " . implode(", ", $filteredNumbers);
+?>
+
+
+- Завдання 2
+
+<?php
+// Завдання 2: Функція для обчислення квадрата
+
+// Функція для обчислення квадрата числа
+function square($number) {
+    return $number * $number;
+}
+
+// Масив чисел від 1 до 5
+$nums = range(1, 5);
+$squaredNums = array_map('square', $nums);
+
+// Виводимо результати
+echo "<strong>Квадрати чисел від 1 до 5:</strong> " . implode(", ", $squaredNums);
+?>
+
+
+- index(4).html
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота 04</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Лабораторна робота 04</h1>
+        <p><strong>Тема:</strong> Робота з масивами та функціями</p>
+        <p><strong>Виконав:</strong> Макаренко Микола Віталійович</p>
+        <p><strong>Група:</strong> KN1-B22</p>
+        <a href="https://drive.google.com/file/d/1y_otiPR9i77Tc8SS39H5UWKxKx2AQZUC/view" target="_blank">Переглянути завдання</a>
+    </div>
+
+</body>
+</html>
