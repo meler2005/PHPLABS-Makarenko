@@ -1,0 +1,242 @@
+----- Виконання завдань: -----
+
+----- create_database.sql -----
+
+CREATE DATABASE IF NOT EXISTS Orders;
+
+USE Orders;
+
+CREATE TABLE IF NOT EXISTS OrderDetails (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_name VARCHAR(255) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    order_date DATE NOT NULL
+);
+
+
+----- config.php -----
+
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "Orders";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+
+----- add_order.php -----
+
+<?php
+include 'config.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $product_name = $_POST['product_name'];
+    $quantity = $_POST['quantity'];
+    $price = $_POST['price'];
+    $order_date = $_POST['order_date'];
+
+    $sql = "INSERT INTO OrderDetails (product_name, quantity, price, order_date)
+            VALUES ('$product_name', '$quantity', '$price', '$order_date')";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "Замовлення додано!";
+    } else {
+        echo "Помилка: " . $conn->error;
+    }
+
+    $conn->close();
+    header("Location: view_orders.php");
+    exit();
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Додати замовлення</title>
+</head>
+<body>
+    <h2>Додати нове замовлення</h2>
+    <form method="POST" action="">
+        <label>Назва продукту:</label>
+        <input type="text" name="product_name" required><br><br>
+
+        <label>Кількість:</label>
+        <input type="number" name="quantity" required><br><br>
+
+        <label>Ціна:</label>
+        <input type="number" step="0.01" name="price" required><br><br>
+
+        <label>Дата замовлення:</label>
+        <input type="date" name="order_date" required><br><br>
+
+        <input type="submit" value="Додати">
+    </form>
+
+    <br>
+    <a href="view_orders.php">До списку замовлень</a>
+</body>
+</html>
+
+
+----- view_orders.php -----
+
+<?php
+include 'config.php';
+
+$date_filter = "";
+if (isset($_GET['order_date']) && $_GET['order_date'] != "") {
+    $date_filter = "WHERE order_date = '" . $_GET['order_date'] . "'";
+}
+
+$sql = "SELECT * FROM OrderDetails $date_filter ORDER BY id DESC";
+$result = $conn->query($sql);
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Замовлення</title>
+</head>
+<body>
+    <h2>Список замовлень</h2>
+
+    <form method="GET" action="">
+        <label>Фільтр за датою:</label>
+        <input type="date" name="order_date">
+        <input type="submit" value="Фільтрувати">
+        <a href="view_orders.php">Очистити</a>
+    </form>
+
+    <br>
+    <a href="add_order.php">+ Додати нове замовлення</a>
+    <br><br>
+
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <th>ID</th>
+            <th>Назва продукту</th>
+            <th>Кількість</th>
+            <th>Ціна</th>
+            <th>Дата замовлення</th>
+            <th>Дія</th>
+        </tr>
+
+        <?php
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                echo "<tr>
+                        <td>".$row["id"]."</td>
+                        <td>".$row["product_name"]."</td>
+                        <td>".$row["quantity"]."</td>
+                        <td>".$row["price"]."</td>
+                        <td>".$row["order_date"]."</td>
+                        <td>
+                            <a href='delete_order.php?id=".$row["id"]."' onclick=\"return confirm('Видалити?')\">Видалити</a>
+                        </td>
+                    </tr>";
+            }
+        } else {
+            echo "<tr><td colspan='6'>Замовлень немає.</td></tr>";
+        }
+        ?>
+    </table>
+
+</body>
+</html>
+
+<?php $conn->close(); ?>
+
+
+----- delete_order.php -----
+
+<?php
+include 'config.php';
+
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+
+    $sql = "DELETE FROM OrderDetails WHERE id = $id";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "Замовлення видалено.";
+    } else {
+        echo "Помилка: " . $conn->error;
+    }
+}
+
+$conn->close();
+
+header("Location: view_orders.php");
+exit();
+?>
+
+
+----- Результати: -----
+https://drive.google.com/drive/folders/1IzbYLYEZ3PhExzpJKC0HMZXGcufBfuEp?usp=sharing
+
+
+------ Титульна: -----
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота 06</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Лабораторна робота 06</h1>
+        <p><strong>Тема:</strong> Взаємодія з MySQL. CRUD операції.</p>
+        <p><strong>Виконав:</strong> Макаренко Микола Віталійович</p>
+        <p><strong>Група:</strong> KN1-B22</p>
+        <a href="https://moodle.kpnu.edu.ua/pluginfile.php/670243/mod_resource/content/0/LAB_%D0%92%D0%A2%D0%92%D0%94_2024_%2306_%D0%92%D0%B7%D0%B0%D1%94%D0%BC%D0%BE%D0%B4%D1%96%D1%8F%20%D0%B7%20MySQL.pdf" target="_blank">Переглянути завдання</a>
+    </div>
+
+</body>
+</html>
+
+----- Результат: -----
+https://drive.google.com/file/d/1-cL2_Yooy2WyAHkKFhAlIfoPzk3YK3Ct/view?usp=sharing
