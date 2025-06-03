@@ -1,0 +1,231 @@
+Завдання 1:
+
+<?php
+$servername = "localhost";
+$username = "root"; // Стандартно для XAMPP
+$password = "";     // Без пароля за замовчуванням
+$dbname = "Orders";
+
+// Створення з'єднання
+$conn = new mysqli($servername, $username, $password);
+
+// Перевірка з'єднання
+if ($conn->connect_error) {
+    die("Помилка з'єднання: " . $conn->connect_error);
+}
+
+// Створення бази даних
+$sql = "CREATE DATABASE IF NOT EXISTS $dbname";
+if ($conn->query($sql) === TRUE) {
+    echo "Базу даних 'Orders' створено успішно або вона вже існує.<br>";
+} else {
+    echo "Помилка створення БД: " . $conn->error;
+}
+
+// Вибір бази даних
+$conn->select_db($dbname);
+
+// Створення таблиці OrderDetails
+$sql = "CREATE TABLE IF NOT EXISTS OrderDetails (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    product_name VARCHAR(255) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    order_date DATE NOT NULL
+)";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Таблицю 'OrderDetails' створено успішно.";
+} else {
+    echo "Помилка створення таблиці: " . $conn->error;
+}
+
+$conn->close();
+?>
+
+Результат:
+https://drive.google.com/drive/folders/1oBdLmGEpb6yEgW9P7EHXAY4cT5hNaqUv?usp=sharing
+
+
+
+Завдання 2:
+
+<?php
+// Параметри підключення до бази даних
+$host = "localhost";
+$user = "root"; // за замовчуванням у XAMPP
+$password = ""; // за замовчуванням у XAMPP
+$dbname = "Orders";
+
+// Підключення до MySQL
+$conn = new mysqli($host, $user, $password, $dbname);
+
+// Перевірка з'єднання
+if ($conn->connect_error) {
+    die("Помилка підключення: " . $conn->connect_error);
+}
+
+// Отримуємо дату фільтрації (якщо передана)
+$date_filter = isset($_GET['order_date']) ? $_GET['order_date'] : '';
+
+// Формуємо SQL-запит з урахуванням фільтра
+$sql = "SELECT * FROM OrderDetails";
+
+if (!empty($date_filter)) {
+    // Захист від SQL ін'єкції
+    $date_filter_escaped = $conn->real_escape_string($date_filter);
+    $sql .= " WHERE order_date = '$date_filter_escaped'";
+}
+
+$result = $conn->query($sql);
+
+?>
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Перегляд замовлень</title>
+</head>
+<body>
+    <h1>Перегляд замовлень</h1>
+
+    <form method="GET" action="">
+        <label for="order_date">Фільтр за датою замовлення:</label>
+        <input type="date" id="order_date" name="order_date" value="<?php echo htmlspecialchars($date_filter); ?>">
+        <button type="submit">Фільтрувати</button>
+        <button type="button" onclick="window.location.href='view_orders.php'">Очистити фільтр</button>
+    </form>
+
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Назва товару</th>
+                <th>Кількість</th>
+                <th>Ціна</th>
+                <th>Дата замовлення</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($result && $result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>" . htmlspecialchars($row['id']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['product_name']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['quantity']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['price']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['order_date']) . "</td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='5'>Замовлень не знайдено</td></tr>";
+            }
+            $conn->close();
+            ?>
+        </tbody>
+    </table>
+</body>
+</html>
+
+Результат:
+https://drive.google.com/file/d/1tOfcZyG35w0-3IiNchK0nZhQepYkp-Dc/view?usp=sharing
+
+
+
+Завдання 3:
+
+<?php
+function deleteOrderById($id) {
+    // Параметри підключення до бази даних
+    $host = "localhost";
+    $user = "root";
+    $password = "";
+    $dbname = "Orders";
+
+    // Підключення до MySQL
+    $conn = new mysqli($host, $user, $password, $dbname);
+
+    // Перевірка з'єднання
+    if ($conn->connect_error) {
+        die("Помилка підключення: " . $conn->connect_error);
+    }
+
+    // Захист від SQL-ін'єкції — приводимо id до цілого числа
+    $id = intval($id);
+
+    // SQL-запит для видалення
+    $sql = "DELETE FROM OrderDetails WHERE id = $id";
+
+    if ($conn->query($sql) === TRUE) {
+        $conn->close();
+        return true; // Видалення пройшло успішно
+    } else {
+        echo "Помилка при видаленні: " . $conn->error;
+        $conn->close();
+        return false;
+    }
+}
+
+Результат:
+
+
+
+Титульна:
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота 06</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Лабораторна робота 06</h1>
+        <p><strong>Тема:</strong> Взаємодія з MySQL. CRUD операції.</p>
+        <p><strong>Виконав:</strong> Макаренко Микола Віталійович</p>
+        <p><strong>Група:</strong> KN1-B22</p>
+        <a href="https://moodle.kpnu.edu.ua/pluginfile.php/670243/mod_resource/content/0/LAB_%D0%92%D0%A2%D0%92%D0%94_2024_%2306_%D0%92%D0%B7%D0%B0%D1%94%D0%BC%D0%BE%D0%B4%D1%96%D1%8F%20%D0%B7%20MySQL.pdf" target="_blank">Переглянути завдання</a>
+    </div>
+
+</body>
+</html>
+
+Результат:
+https://drive.google.com/file/d/1-cL2_Yooy2WyAHkKFhAlIfoPzk3YK3Ct/view?usp=sharing
