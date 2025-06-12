@@ -1,0 +1,200 @@
+--SQL-запити для створення таблиць--
+
+CREATE DATABASE sales_db;
+USE sales_db;
+
+-- Таблиця товарів
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    price DECIMAL(10,2),
+    stock INT
+);
+
+-- Таблиця клієнтів
+CREATE TABLE clients (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    phone VARCHAR(20)
+);
+
+-- Таблиця замовлень
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT,
+    product_id INT,
+    quantity INT,
+    order_date DATE,
+    FOREIGN KEY (client_id) REFERENCES clients(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+
+htdocs/
+└── sales/
+    ├── index.php
+    ├── admin/
+    │   └── add_order.php
+    ├── includes/
+    │   └── db.php
+    └── report/
+        └── sales_report.php
+
+
+--index.php--
+
+<?php
+include('includes/db.php');
+
+// Отримати загальні дані
+$product_count = $conn->query("SELECT COUNT(*) FROM products")->fetch_row()[0];
+$client_count = $conn->query("SELECT COUNT(*) FROM clients")->fetch_row()[0];
+$order_count = $conn->query("SELECT COUNT(*) FROM orders")->fetch_row()[0];
+?>
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Система управління продажами</title>
+</head>
+<body>
+    <h1>Головна сторінка</h1>
+
+    <h3>Статистика:</h3>
+    <ul>
+        <li>Кількість товарів: <?php echo $product_count; ?></li>
+        <li>Кількість клієнтів: <?php echo $client_count; ?></li>
+        <li>Кількість замовлень: <?php echo $order_count; ?></li>
+    </ul>
+
+    <h3>Навігація:</h3>
+    <ul>
+        <li><a href="admin/add_order.php">Додати нове замовлення</a></li>
+        <li><a href="report/sales_report.php">Звіт про продажі</a></li>
+    </ul>
+</body>
+</html>
+
+--add_order.php--
+
+<?php
+$host = 'localhost';
+$db = 'sales_db';
+$user = 'root';
+$pass = '';
+
+$conn = new mysqli($host, $user, $pass, $db);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+--dp.php--
+
+<?php
+$host = 'localhost';
+$db = 'sales_db';
+$user = 'root';
+$pass = '';
+
+$conn = new mysqli($host, $user, $pass, $db);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+--sales_report.php--
+
+<?php include('../includes/db.php'); ?>
+
+<form method="GET">
+    <label>Звіт з: <input type="date" name="from"></label>
+    <label>до: <input type="date" name="to"></label>
+    <button type="submit">Згенерувати</button>
+</form>
+
+<?php
+if (isset($_GET['from']) && isset($_GET['to'])) {
+    $from = $_GET['from'];
+    $to = $_GET['to'];
+
+    $sql = "SELECT SUM(p.price * o.quantity) AS total_sales
+            FROM orders o
+            JOIN products p ON o.product_id = p.id
+            WHERE o.order_date BETWEEN '$from' AND '$to'";
+
+    $result = $conn->query($sql);
+    $row = $result->fetch_assoc();
+
+    echo "<h3>Загальний обсяг продажів: " . ($row['total_sales'] ?? 0) . " грн</h3>";
+}
+?>
+
+
+--sql, код для додавання товару--
+
+INSERT INTO products (name, price, stock) VALUES
+('Ноутбук Lenovo', 22000.00, 10),
+('Смартфон Samsung', 17000.00, 15),
+('Навушники JBL', 2500.00, 30),
+('Монітор LG', 8000.00, 5);
+
+--Результат--
+https://drive.google.com/drive/folders/1f7MO-dvFiTc5vuUtmbs2pad418Yocyw8?usp=sharing
+
+--Титульна--
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота 07</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Лабораторна робота 07</h1>
+        <p><strong>Тема:</strong> Міні-проєкт: створення динамічного вебдодатка.</p>
+        <p><strong>Виконав:</strong> Макаренко Микола Віталійович</p>
+        <p><strong>Група:</strong> KN1-B22</p>
+        <a href="https://moodle.kpnu.edu.ua/pluginfile.php/670767/mod_resource/content/0/LAB_%D0%92%D0%A2%D0%92%D0%94_2024_%2307_%D0%9C%D1%96%D0%BD%D1%96%20%D0%BF%D1%80%D0%BE%D1%94%D0%BA%D1%82.pdf" target="_blank">Переглянути завдання</a>
+    </div>
+
+</body>
+</html>
